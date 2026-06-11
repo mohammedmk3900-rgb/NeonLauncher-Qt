@@ -3,6 +3,9 @@ import QtQuick.Controls
 
 Rectangle {
 
+    required property string gameName
+    required property string gameIcon
+
     width: 280
     height: 180
 
@@ -28,6 +31,10 @@ Rectangle {
         onExited: {
             parent.scale = 1.0
         }
+
+        onClicked: {
+            console.log("Playing game:", gameName)
+        }
     }
 
     Behavior on scale {
@@ -44,13 +51,17 @@ Rectangle {
         spacing: 14
 
         Text {
-            text: "Cyberpunk 2077"
+            text: gameName
             color: "#00ffee"
             font.pixelSize: 22
+            font.bold: true
         }
 
         Button {
             text: "PLAY"
+            onClicked: {
+                console.log("Launching:", gameName)
+            }
         }
     }
 }
