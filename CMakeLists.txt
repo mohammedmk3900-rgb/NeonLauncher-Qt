@@ -9,7 +9,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Sql)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick Sql)
 
 qt_add_executable(NeonLauncher
     src/main.cpp
@@ -31,6 +31,8 @@ qt_add_qml_module(NeonLauncher
 target_include_directories(NeonLauncher PRIVATE src src/core)
 
 target_link_libraries(NeonLauncher PRIVATE
+    Qt6::Core
+    Qt6::Gui
     Qt6::Quick
     Qt6::Sql
 )
