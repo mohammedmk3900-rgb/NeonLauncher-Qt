@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include "core/Database.h"
 #include "core/SteamScanner.h"
 
@@ -12,7 +13,7 @@ int main(int argc, char *argv[])
         qWarning() << "Failed to initialize database!";
     }
 
-    // Scan Steam games on startup (اختیاری)
+    // Scan Steam games on startup
     SteamScanner::scanSteamGames();
 
     QQmlApplicationEngine engine;
