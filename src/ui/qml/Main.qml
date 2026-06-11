@@ -31,13 +31,18 @@ ApplicationWindow {
             GridView {
 
                 anchors.fill: parent
+                anchors.margins: 20
 
                 cellWidth: 320
                 cellHeight: 220
 
-                model: 12
+                // Model will be connected from C++ backend
+                model: gameModel
 
-                delegate: GameCard {}
+                delegate: GameCard {
+                    gameName: model.name
+                    gameIcon: model.icon
+                }
             }
         }
     }
