@@ -14,7 +14,9 @@ find_package(Qt6 REQUIRED COMPONENTS Quick Sql)
 qt_add_executable(NeonLauncher
     src/main.cpp
     src/core/Database.cpp
+    src/core/Database.h
     src/core/SteamScanner.cpp
+    src/core/SteamScanner.h
 )
 
 qt_add_qml_module(NeonLauncher
