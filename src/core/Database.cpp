@@ -18,15 +18,19 @@ bool Database::initialize()
 
     QSqlQuery query;
 
-    query.exec(
+    if (!query.exec(
         "CREATE TABLE IF NOT EXISTS games ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "name TEXT,"
         "exePath TEXT,"
         "iconPath TEXT"
         ")"
-    );
+    )) {
+        qDebug() << "Failed to create games table:" << query.lastError().text();
+        return false;
+    }
 
+    qDebug() << "Games table created successfully";
     return true;
 }
 
@@ -40,6 +44,8 @@ void Database::addGame(const QString& name, const QString& exePath, const QStrin
     
     if (!query.exec()) {
         qDebug() << "Failed to insert game:" << query.lastError().text();
+    } else {
+        qDebug() << "Game added successfully:" << name;
     }
 }
 
@@ -48,9 +54,15 @@ QStringList Database::getAllGames()
     QStringList games;
     QSqlQuery query("SELECT name FROM games");
     
+    if (!query.exec()) {
+        qDebug() << "Failed to query games:" << query.lastError().text();
+        return games;
+    }
+    
     while (query.next()) {
         games << query.value(0).toString();
     }
     
+    qDebug() << "Retrieved" << games.size() << "games from database";
     return games;
 }
