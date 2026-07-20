@@ -1,65 +1,191 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Effects
 
 Rectangle {
 
     color: "#11151b"
     width: 250
+    clip: true
+
+    signal pageChanged(string page)
 
     Column {
 
-        spacing: 25
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.margins: 20
+        anchors.fill: parent
+        spacing: 0
 
-        Text {
-            text: "NeonLauncher"
-            color: "#00ffee"
-            font.pixelSize: 24
-            font.bold: true
-            anchors.horizontalCenter: parent.horizontalCenter
+        // Header
+        Rectangle {
+            width: parent.width
+            height: 100
+            color: "#0a0d12"
+            border.bottom.color: "#00ffee20"
+            border.bottom.width: 1
+
+            Column {
+                anchors.fill: parent
+                anchors.margins: 15
+                spacing: 8
+                justifyContent: Column.AlignVCenter
+
+                Text {
+                    text: "🚀 NeonLauncher"
+                    color: "#00ffee"
+                    font.pixelSize: 20
+                    font.bold: true
+                    renderType: Text.NativeRendering
+                }
+
+                Text {
+                    text: "Ultimate Game Launcher"
+                    color: "#00ffee80"
+                    font.pixelSize: 11
+                    renderType: Text.NativeRendering
+                }
+            }
         }
 
-        Repeater {
+        // Scrollable Navigation
+        ScrollView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            clip: true
 
-            model: [
-                { icon: "🏠", label: "Library" },
-                { icon: "🛒", label: "Marketplace" },
-                { icon: "🔧", label: "Mods" },
-                { icon: "📥", label: "Downloads" },
-                { icon: "👥", label: "Friends" },
-                { icon: "🤖", label: "AI" },
-                { icon: "⚙️", label: "Settings" }
-            ]
-
-            delegate: Button {
-
-                text: modelData.label
-                anchors.left: parent.left
-                anchors.right: parent.right
-
+            Column {
                 width: parent.width
-                height: 52
+                spacing: 8
+                padding: 15
 
-                background: Rectangle {
-                    color: "#00ffee"
-                    opacity: parent.hovered ? 0.2 : 0.1
-                    radius: 12
+                // Navigation Items
+                SidebarButton {
+                    width: parent.width - 30
+                    icon: "🏠"
+                    label: "Library"
+                    selected: true
+                    onClicked: pageChanged("library")
                 }
 
-                contentItem: Text {
-                    text: parent.text
-                    color: "#00ffee"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 14
+                SidebarButton {
+                    width: parent.width - 30
+                    icon: "🔥"
+                    label: "Trending"
+                    onClicked: pageChanged("trending")
                 }
 
-                Behavior on background.opacity {
-                    NumberAnimation { duration: 150 }
+                SidebarButton {
+                    width: parent.width - 30
+                    icon: "❤️"
+                    label: "Favorites"
+                    onClicked: pageChanged("favorites")
+                }
+
+                SidebarButton {
+                    width: parent.width - 30
+                    icon: "🕐"
+                    label: "Recently Played"
+                    onClicked: pageChanged("recent")
+                }
+
+                // Divider
+                Rectangle {
+                    width: parent.width - 30
+                    height: 1
+                    color: "#00ffee20"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.topMargin: 8
+                    anchors.bottomMargin: 8
+                }
+
+                SidebarButton {
+                    width: parent.width - 30
+                    icon: "🛒"
+                    label: "Marketplace"
+                    onClicked: pageChanged("marketplace")
+                }
+
+                SidebarButton {
+                    width: parent.width - 30
+                    icon: "🎨"
+                    label: "Skins & Themes"
+                    onClicked: pageChanged("skins")
+                }
+
+                SidebarButton {
+                    width: parent.width - 30
+                    icon: "🔧"
+                    label: "Mods"
+                    onClicked: pageChanged("mods")
+                }
+
+                // Divider
+                Rectangle {
+                    width: parent.width - 30
+                    height: 1
+                    color: "#00ffee20"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.topMargin: 8
+                    anchors.bottomMargin: 8
+                }
+
+                SidebarButton {
+                    width: parent.width - 30
+                    icon: "👥"
+                    label: "Friends"
+                    badge: "3"
+                    onClicked: pageChanged("friends")
+                }
+
+                SidebarButton {
+                    width: parent.width - 30
+                    icon: "💬"
+                    label: "Community"
+                    onClicked: pageChanged("community")
+                }
+
+                SidebarButton {
+                    width: parent.width - 30
+                    icon: "📊"
+                    label: "Stats"
+                    onClicked: pageChanged("stats")
+                }
+
+                Item {
+                    Layout.fillHeight: true
+                }
+            }
+        }
+
+        // Footer
+        Rectangle {
+            width: parent.width
+            height: 80
+            color: "#0a0d12"
+            border.top.color: "#00ffee20"
+            border.top.width: 1
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 12
+                spacing: 8
+
+                SidebarButton {
+                    Layout.fillWidth: true
+                    height: 36
+                    icon: "⚙️"
+                    label: "Settings"
+                    compact: true
+                    onClicked: pageChanged("settings")
+                }
+
+                SidebarButton {
+                    Layout.fillWidth: true
+                    height: 36
+                    icon: "ℹ️"
+                    label: "About"
+                    compact: true
+                    onClicked: pageChanged("about")
                 }
             }
         }
