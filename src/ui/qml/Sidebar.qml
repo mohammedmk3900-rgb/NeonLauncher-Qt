@@ -7,6 +7,9 @@ Rectangle {
     color: "#11151b"
     width: 250
 
+    // Optimize scrolling
+    clip: true
+
     Column {
 
         spacing: 25
@@ -21,33 +24,36 @@ Rectangle {
             font.pixelSize: 24
             font.bold: true
             anchors.horizontalCenter: parent.horizontalCenter
+            renderType: Text.NativeRendering
         }
 
-        Repeater {
+        // Use ListView for memory efficiency with many items
+        ListView {
 
-            model: [
-                { icon: "🏠", label: "Library" },
-                { icon: "🛒", label: "Marketplace" },
-                { icon: "🔧", label: "Mods" },
-                { icon: "📥", label: "Downloads" },
-                { icon: "👥", label: "Friends" },
-                { icon: "🤖", label: "AI" },
-                { icon: "⚙️", label: "Settings" }
-            ]
+            width: parent.width
+            height: contentHeight
+
+            interactive: false
+            spacing: 10
+
+            model: sidebarModel
 
             delegate: Button {
 
-                text: modelData.label
-                anchors.left: parent.left
-                anchors.right: parent.right
-
                 width: parent.width
                 height: 52
+
+                text: modelData.label
 
                 background: Rectangle {
                     color: "#00ffee"
                     opacity: parent.hovered ? 0.2 : 0.1
                     radius: 12
+
+                    // Smooth transitions without expensive animations
+                    Behavior on opacity {
+                        NumberAnimation { duration: 150 }
+                    }
                 }
 
                 contentItem: Text {
@@ -56,12 +62,24 @@ Rectangle {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 14
-                }
-
-                Behavior on background.opacity {
-                    NumberAnimation { duration: 150 }
+                    renderType: Text.NativeRendering
                 }
             }
         }
     }
+
+    // Move model outside to prevent recreation
+    Component.onCompleted: {
+        sidebarModel = [
+            { icon: "🏠", label: "Library" },
+            { icon: "🛒", label: "Marketplace" },
+            { icon: "🔧", label: "Mods" },
+            { icon: "📥", label: "Downloads" },
+            { icon: "👥", label: "Friends" },
+            { icon: "🤖", label: "AI" },
+            { icon: "⚙️", label: "Settings" }
+        ]
+    }
+
+    property var sidebarModel: []
 }
