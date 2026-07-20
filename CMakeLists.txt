@@ -17,6 +17,8 @@ qt_add_executable(NeonLauncher
     src/core/Database.h
     src/core/SteamScanner.cpp
     src/core/SteamScanner.h
+    src/core/GameModel.cpp
+    src/core/GameModel.h
 )
 
 qt_add_qml_module(NeonLauncher
