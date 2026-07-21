@@ -1,4 +1,4 @@
-Name: C/C++ CI
+name: Ultimate Heavyweight Multi-Platform Build
 
 on:
   push:
@@ -7,76 +7,143 @@ on:
     branches: [ "main" ]
 
 jobs:
+  # ----------------------------------------------------
+  # ۱. بیلد فوق‌العاده سنگین و کامل لینوکس (Ubuntu)
+  # ----------------------------------------------------
   build-linux:
+    name: Heavy Linux Build (Qt6 Full Suite)
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
-    
-    # نصب کامل تمام ماژول‌های توسعه‌ای Qt6 روی لینوکس
-    - name: Install Full Qt6 on Linux
+
+    # نصب تمام ماژول‌ها و ابزارهای سیستم‌عامل لینوکس جهت پستی‌وبلندی‌های کامپایل
+    - name: Install All Linux Qt6 Modules & Tools
       run: |
         sudo apt-get update
         sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build \
+          mesa-common-dev \
+          libgl1-mesa-dev \
+          libglu1-mesa-dev \
+          libegl1-mesa-dev \
+          libfontconfig1-dev \
+          libfreetype6-dev \
+          libx11-dev \
+          libx11-xcb-dev \
+          libxext-dev \
+          libxfixes-dev \
+          libxi-dev \
+          libxrender-dev \
+          libxcb1-dev \
+          libxcb-glx0-dev \
+          libxcb-keysyms1-dev \
+          libxcb-image0-dev \
+          libxcb-shm0-dev \
+          libxcb-icccm4-dev \
+          libxcb-sync-dev \
+          libxcb-xfixes0-dev \
+          libxcb-shape0-dev \
+          libxcb-randr0-dev \
+          libxcb-render-util0-dev \
+          libxcb-util-dev \
+          libxcb-xinerama0-dev \
+          libxcb-xinput-dev \
+          libxkbcommon-dev \
+          libxkbcommon-x11-dev \
           qt6-base-dev \
           qt6-declarative-dev \
           qt6-tools-dev \
+          qt6-tools-dev-tools \
+          qt6-l10n-tools \
+          qt6-statemachine-dev \
           qt6-shadertools-dev \
+          qt6-svg-dev \
+          qt6-image-formats-plugins \
+          qt6-multimedia-dev \
+          qt6-positioning-dev \
+          qt6-sensors-dev \
+          qt6-serialport-dev \
+          qt6-webengine-dev \
+          qt6-websockets-dev \
+          qt6-connectivity-dev \
+          qt6-scxml-dev \
           qml6-module-qtcore \
           qml6-module-qtquick \
           qml6-module-qtquick-controls \
           qml6-module-qtquick-layouts \
+          qml6-module-qtquick-window \
           qml6-module-qtquick-templates \
-          qml6-module-qtqml \
-          cmake \
-          build-essential
-    
-    - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17
-    
-    - name: Build
-      run: cmake --build build --config Release
+          qml6-module-qtquick-effects \
+          qml6-module-qtquick-shapes \
+          qml6-module-qtqml-workerscript
 
-  build-windows:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    # دانلود یک نسخه کامل و بدون نقص از Qt 6.5.3 برای ویندوز
-    - name: Install Qt6 on Windows
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.5.3'
-        host: 'windows'
-        target: 'desktop'
-        arch: 'win64_msvc2019_64'
-        modules: 'qtshade-tools qtdeclarative'
-    
-    - name: Configure CMake
+    - name: Configure CMake (Linux)
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17 -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
-    
-    - name: Build
-      run: cmake --build build --config Release
+        cmake -B build \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_CXX_STANDARD=17
+
+    - name: Build Project (Linux)
+      run: cmake --build build --config Release -j $(nproc)
+
+    - name: Upload Linux Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NeonLauncher-Linux-Full
+        path: |
+          build/NeonLauncher*
+          build/bin/
+
+  # ----------------------------------------------------
+  # ۲. بیلد غول‌آسا و سنگین ویندوز (Windows MSVC)
+  # ----------------------------------------------------
   build-windows:
+    name: Heavy Windows Build (Qt6 Complete Stack)
     runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Install Qt6
+
+    # دانلود کامل‌ترین پکیج Qt6 ویندوز با تمام ماژول‌های موجود
+    - name: Download & Install Heavyweight Qt6 for Windows
       uses: jurplel/install-qt-action@v4
       with:
-        version: '6.5.3'
+        version: '6.7.0'
         host: 'windows'
         target: 'desktop'
         arch: 'win64_msvc2019_64'
-    
-    - name: Configure with CMake
+        # دانلود تمام ماژول‌های اضافی و سنگین
+        modules: >
+          qtmultimedia
+          qtpositioning
+          qtsensors
+          qtconnectivity
+          qtserialport
+          qtsvg
+          qttools
+          qtwebchannel
+          qtwebsockets
+          qt5compat
+          qtshadertools
+          qtimageformats
+          qtquick3d
+          qtquicktimeline
+
+    - name: Configure CMake (Windows)
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
-    
-    - name: Build
-      run: cmake --build build --config Release
-    
-    - name: Tests
-      run: ctest --test-dir build --verbose --config Release || true
+        cmake -B build `
+          -DCMAKE_BUILD_TYPE=Release `
+          -DCMAKE_CXX_STANDARD=17 `
+          -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
+
+    - name: Build Project (Windows)
+      run: cmake --build build --config Release --parallel
+
+    - name: Upload Windows Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NeonLauncher-Windows-Full
+        path: build/Release/
