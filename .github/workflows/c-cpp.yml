@@ -30,7 +30,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: NeonLauncher-Linux
-        path: build/NeonLauncher*
+        path: build/NeonLauncherApp*
 
   build-windows:
     runs-on: windows-2019
