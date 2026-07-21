@@ -5,7 +5,7 @@ project(NeonLauncher VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# این بخش خطای stdext را در ویندوز کاملاً دور می‌زند و حل می‌کند
+# رفع خطای stdext در ویندوز
 if(MSVC)
     add_compile_definitions(_SILENCE_STDEXT_ARR_IT_DEPRECATION_WARNINGS)
     add_compile_options(/Zc:__cplusplus)
@@ -35,16 +35,6 @@ qt_add_qml_module(NeonLauncherApp
         src/ui/qml/Main.qml
         src/ui/qml/GameCard.qml
         src/ui/qml/Sidebar.qml
-)
-
-target_include_directories(NeonLauncherApp PRIVATE src src/core)
-
-target_link_libraries(NeonLauncherApp PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Quick
-    Qt6::Sql
-)
 )
 
 target_include_directories(NeonLauncherApp PRIVATE src src/core)
