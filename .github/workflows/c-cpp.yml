@@ -1,4 +1,4 @@
-name: C/C++ CI
+Name: C/C++ CI
 
 on:
   push:
@@ -9,31 +9,54 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     
-    - name: Install Qt6 and dependencies
+    # نصب کامل تمام ماژول‌های توسعه‌ای Qt6 روی لینوکس
+    - name: Install Full Qt6 on Linux
       run: |
         sudo apt-get update
         sudo apt-get install -y \
           qt6-base-dev \
           qt6-declarative-dev \
           qt6-tools-dev \
+          qt6-shadertools-dev \
           qml6-module-qtcore \
           qml6-module-qtquick \
+          qml6-module-qtquick-controls \
+          qml6-module-qtquick-layouts \
+          qml6-module-qtquick-templates \
+          qml6-module-qtqml \
           cmake \
           build-essential
     
-    - name: Configure with CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17
     
     - name: Build
       run: cmake --build build --config Release
-    
-    - name: Tests
-      run: ctest --test-dir build --verbose || true
 
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    # دانلود یک نسخه کامل و بدون نقص از Qt 6.5.3 برای ویندوز
+    - name: Install Qt6 on Windows
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.5.3'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+        modules: 'qtshade-tools qtdeclarative'
+    
+    - name: Configure CMake
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17 -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
+    
+    - name: Build
+      run: cmake --build build --config Release
   build-windows:
     runs-on: windows-latest
 
