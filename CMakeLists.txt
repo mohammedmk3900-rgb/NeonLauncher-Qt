@@ -27,11 +27,6 @@ qt_add_executable(NeonLauncherApp
     src/core/GameModel.h
 )
 
-# تغییر اسم خروجی فایل نهایی اجرایی به NeonLauncher
-set_target_properties(NeonLauncherApp PROPERTIES
-    OUTPUT_NAME "NeonLauncher"
-)
-
 qt_add_qml_module(NeonLauncherApp
     URI NeonLauncher
     VERSION 1.0
@@ -41,10 +36,8 @@ qt_add_qml_module(NeonLauncherApp
         src/ui/qml/Sidebar.qml
 )
 
-# اصلاح نام تارگت در این قسمت
 target_include_directories(NeonLauncherApp PRIVATE src src/core)
 
-# اصلاح نام تارگت در این قسمت
 target_link_libraries(NeonLauncherApp PRIVATE
     Qt6::Core
     Qt6::Gui
