@@ -28,6 +28,12 @@ jobs:
       - name: Build Project
         run: cmake --build build --config Release
 
+      - name: Upload Linux Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NeonLauncher-Linux-x64
+          path: build/NeonLauncherApp
+
   build-windows:
     runs-on: windows-latest
     steps:
@@ -45,10 +51,8 @@ jobs:
       - name: Build Project
         run: cmake --build build --config Release
 
-      # --- بخش جدید: جمع‌آوری فایل‌های Qt و ساخت خروجی ---
       - name: Deploy Qt Dependencies
-        run: |
-          windeployqt --release build/Release/*.exe
+        run: windeployqt --release build/Release/NeonLauncherApp.exe
 
       - name: Upload Windows Build Artifact
         uses: actions/upload-artifact@v4
