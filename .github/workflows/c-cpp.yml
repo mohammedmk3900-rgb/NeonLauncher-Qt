@@ -18,16 +18,23 @@ jobs:
       with:
         version: '6.5.3'
 
-    - name: Clean and Configure with CMake
+    - name: Clean Workspace and Configure CMake
       run: |
         rm -rf build
+        rm -rf NeonLauncher
         cmake -B build -DCMAKE_BUILD_TYPE=Release
     
     - name: Build
       run: cmake --build build --config Release
 
+    - name: Upload Linux Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NeonLauncher-Linux
+        path: build/NeonLauncher
+
   build-windows:
-    runs-on: windows-latest
+    runs-on: windows-2019 # استفاده از ویندوز 2019 برای هماهنگی کامل با کامپایلر MSVC 2019
 
     steps:
     - uses: actions/checkout@v4
@@ -46,3 +53,9 @@ jobs:
     
     - name: Build
       run: cmake --build build --config Release
+
+    - name: Upload Windows Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NeonLauncher-Windows
+        path: build/Release/
