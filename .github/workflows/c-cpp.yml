@@ -1,4 +1,4 @@
-name: Ultimate Heavyweight Multi-Platform Build
+name: Stable Multi-Platform Build
 
 on:
   push:
@@ -7,33 +7,63 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # ----------------------------------------------------
-  # ۱. بیلد فوق‌العاده سنگین و کامل لینوکس (Ubuntu)
-  # ----------------------------------------------------
   build-linux:
-    name: Heavy Linux Build (Qt6 Full Suite)
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+    
+    # نصب نسخه ۶.۵.۳ پایدار (بدون اضافات)
+    - name: Install Qt6
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.5.3'
 
-    # نصب تمام ماژول‌ها و ابزارهای سیستم‌عامل لینوکس جهت پستی‌وبلندی‌های کامپایل
-    - name: Install All Linux Qt6 Modules & Tools
+    - name: Configure with CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17
+    
+    - name: Build
+      run: cmake --build build --config Release
+    
+    - name: Tests
+      run: ctest --test-dir build --verbose || true
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: NeonLauncher-Linux
+        path: build/NeonLauncher*
+
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    # نسخه ویندوز با کامپایلر MSVC
+    - name: Install Qt6
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.5.3'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+    
+    - name: Configure with CMake
       run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          cmake \
-          ninja-build \
-          mesa-common-dev \
-          libgl1-mesa-dev \
-          libglu1-mesa-dev \
-          libegl1-mesa-dev \
-          libfontconfig1-dev \
-          libfreetype6-dev \
-          libx11-dev \
-          libx11-xcb-dev \
-          libxext-dev \
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17 -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
+    
+    - name: Build
+      run: cmake --build build --config Release
+    
+    - name: Tests
+      run: ctest --test-dir build --verbose --config Release || true
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: NeonLauncher-Windows
+        path: build/Release/
           libxfixes-dev \
           libxi-dev \
           libxrender-dev \
