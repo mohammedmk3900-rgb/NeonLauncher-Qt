@@ -18,7 +18,6 @@ void SteamScanner::scanSteamGames()
     QDir dir(libraryPath);
     if (!dir.exists()) return;
 
-    // پیدا کردن تمام فایل‌های مانیفست بازی‌ها (appmanifest_*.acf)
     QStringList filters;
     filters << "appmanifest_*.acf";
     QFileInfoList list = dir.entryInfoList(filters, QDir::Files);
@@ -26,27 +25,24 @@ void SteamScanner::scanSteamGames()
     for (const QFileInfo &fileInfo : list) {
         QVector<GameInfo> parsedGames = parseManifestFile(fileInfo.absoluteFilePath());
         for (const auto &game : parsedGames) {
-            qDebug() << "Found Steam Game:" << game.name << "Path:" << game.installPath;
-            // اینجا می‌تونی بازی رو به دیتابیس یا مدل اضافه کنی
+            qDebug() << "Found Steam Game:" << game.name << "Path:" << game.exePath;
         }
     }
 }
 
 QString SteamScanner::getSteamPath()
 {
-    // مسیرهای پیش‌فرض استیم در سیستم‌عامل‌های مختلف
-    #if defined(Q_OS_WIN)
-    // بررسی مسیرهای رایج ویندوز
+#if defined(Q_OS_WIN)
     QDir steamWin("C:/Program Files (x86)/Steam");
     if (steamWin.exists()) return steamWin.absolutePath();
     
     QDir steamWin2("C:/Program Files/Steam");
     if (steamWin2.exists()) return steamWin2.absolutePath();
-    #elif defined(Q_OS_LINUX)
+#elif defined(Q_OS_LINUX)
     QString home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QString linuxPath = home + "/.steam/steam";
     if (QDir(linuxPath).exists()) return linuxPath;
-    #endif
+#endif
 
     return "";
 }
@@ -62,7 +58,6 @@ QVector<GameInfo> SteamScanner::parseManifestFile(const QString& manifestPath)
     QString name;
     QString installDirName;
 
-    // ساده‌سازی خواندن فایل‌های KeyValues استیم
     while (!in.atEnd()) {
         QString line = in.readLine();
         if (line.contains("\"name\"")) {
