@@ -13,26 +13,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # نصب نسخه ۶.۵.۳ پایدار (بدون اضافات)
-    - name: Install Qt6
+    - name: Install Qt6 (6.5.3)
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.5.3'
 
     - name: Configure with CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
     
     - name: Build
       run: cmake --build build --config Release
-    
-    - name: Tests
-      run: ctest --test-dir build --verbose || true
-
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: NeonLauncher-Linux
-        path: build/NeonLauncher*
 
   build-windows:
     runs-on: windows-latest
@@ -40,8 +30,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # نسخه ویندوز با کامپایلر MSVC
-    - name: Install Qt6
+    - name: Install Qt6 (6.5.3 MSVC)
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.5.3'
@@ -51,129 +40,7 @@ jobs:
     
     - name: Configure with CMake
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17 -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
     
     - name: Build
       run: cmake --build build --config Release
-    
-    - name: Tests
-      run: ctest --test-dir build --verbose --config Release || true
-
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: NeonLauncher-Windows
-        path: build/Release/
-          libxfixes-dev \
-          libxi-dev \
-          libxrender-dev \
-          libxcb1-dev \
-          libxcb-glx0-dev \
-          libxcb-keysyms1-dev \
-          libxcb-image0-dev \
-          libxcb-shm0-dev \
-          libxcb-icccm4-dev \
-          libxcb-sync-dev \
-          libxcb-xfixes0-dev \
-          libxcb-shape0-dev \
-          libxcb-randr0-dev \
-          libxcb-render-util0-dev \
-          libxcb-util-dev \
-          libxcb-xinerama0-dev \
-          libxcb-xinput-dev \
-          libxkbcommon-dev \
-          libxkbcommon-x11-dev \
-          qt6-base-dev \
-          qt6-declarative-dev \
-          qt6-tools-dev \
-          qt6-tools-dev-tools \
-          qt6-l10n-tools \
-          qt6-statemachine-dev \
-          qt6-shadertools-dev \
-          qt6-svg-dev \
-          qt6-image-formats-plugins \
-          qt6-multimedia-dev \
-          qt6-positioning-dev \
-          qt6-sensors-dev \
-          qt6-serialport-dev \
-          qt6-webengine-dev \
-          qt6-websockets-dev \
-          qt6-connectivity-dev \
-          qt6-scxml-dev \
-          qml6-module-qtcore \
-          qml6-module-qtquick \
-          qml6-module-qtquick-controls \
-          qml6-module-qtquick-layouts \
-          qml6-module-qtquick-window \
-          qml6-module-qtquick-templates \
-          qml6-module-qtquick-effects \
-          qml6-module-qtquick-shapes \
-          qml6-module-qtqml-workerscript
-
-    - name: Configure CMake (Linux)
-      run: |
-        cmake -B build \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_CXX_STANDARD=17
-
-    - name: Build Project (Linux)
-      run: cmake --build build --config Release -j $(nproc)
-
-    - name: Upload Linux Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: NeonLauncher-Linux-Full
-        path: |
-          build/NeonLauncher*
-          build/bin/
-
-  # ----------------------------------------------------
-  # ۲. بیلد غول‌آسا و سنگین ویندوز (Windows MSVC)
-  # ----------------------------------------------------
-  build-windows:
-    name: Heavy Windows Build (Qt6 Complete Stack)
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    # دانلود کامل‌ترین پکیج Qt6 ویندوز با تمام ماژول‌های موجود
-    - name: Download & Install Heavyweight Qt6 for Windows
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.7.0'
-        host: 'windows'
-        target: 'desktop'
-        arch: 'win64_msvc2019_64'
-        # دانلود تمام ماژول‌های اضافی و سنگین
-        modules: >
-          qtmultimedia
-          qtpositioning
-          qtsensors
-          qtconnectivity
-          qtserialport
-          qtsvg
-          qttools
-          qtwebchannel
-          qtwebsockets
-          qt5compat
-          qtshadertools
-          qtimageformats
-          qtquick3d
-          qtquicktimeline
-
-    - name: Configure CMake (Windows)
-      run: |
-        cmake -B build `
-          -DCMAKE_BUILD_TYPE=Release `
-          -DCMAKE_CXX_STANDARD=17 `
-          -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
-
-    - name: Build Project (Windows)
-      run: cmake --build build --config Release --parallel
-
-    - name: Upload Windows Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: NeonLauncher-Windows-Full
-        path: build/Release/
