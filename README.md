@@ -1,6 +1,8 @@
 # mohammadmk47
 Because the program file was not uploaded to GitHub, I wrote the files in text format (there is one file). To be honest, the idea was mine and the file was written by artificial intelligence. I don't know how to program. I hope you can help me with this idea so that this project becomes one of the best open source launchers like the Playnite program. I will also try to learn programming and join the group (I will most likely learn C++, but maybe I will also learn Python).
 ..................................................................................................................................................................................................................................
+[![Stable Multi-Platform Build](https://github.com/mohammedmk3900-rgb/NeonLauncher-Qt/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/mohammedmk3900-rgb/NeonLauncher-Qt/actions/workflows/c-cpp.yml)
+
 # NeonLauncher
 
 Cyberpunk AAA PC Game Launcher built with C++ and Qt6.
@@ -17,6 +19,7 @@ Cyberpunk AAA PC Game Launcher built with C++ and Qt6.
 - RGB sync
 - Overlay system
 - AI recommendation engine
+
 
 ## Tech Stack
 
