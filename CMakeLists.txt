@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(NeonLauncher VERSION 1.0 LANGUAGES CXX)
+project(NeonLauncher VERSION 1.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -26,8 +26,13 @@ qt_add_executable(NeonLauncherApp
     src/core/SteamScanner.h
     src/core/GameModel.cpp
     src/core/GameModel.h
+    src/core/TranslationManager.cpp
+    src/core/TranslationManager.h
+    src/core/SaveBackupManager.cpp
+    src/core/SaveBackupManager.h
 )
 
+# تعریف یکپارچه‌ی ماژول QML و فایل‌های آن
 qt_add_qml_module(NeonLauncherApp
     URI NeonLauncher
     VERSION 1.0
@@ -35,6 +40,7 @@ qt_add_qml_module(NeonLauncherApp
         src/ui/qml/Main.qml
         src/ui/qml/GameCard.qml
         src/ui/qml/Sidebar.qml
+        src/ui/qml/SaveBackupView.qml
 )
 
 target_include_directories(NeonLauncherApp PRIVATE src src/core)
