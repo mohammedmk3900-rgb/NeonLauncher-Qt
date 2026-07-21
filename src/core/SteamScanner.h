@@ -1,40 +1,27 @@
-#include "SteamScanner.h"
-#include <QDebug>
-#include <QDir>
-#include <QFile>
-#include <QTextStream>
-#include <QStandardPaths>
+#ifndef STEAMSCANNER_H
+#define STEAMSCANNER_H
 
-void SteamScanner::scanSteamGames()
+#include <QString>
+#include <QVector>
+
+struct GameInfo {
+    QString name;
+    QString exePath;
+    QString iconPath;
+};
+
+class SteamScanner
 {
-    qDebug() << "Scanning Steam games...";
-    QString steamPath = getSteamPath();
-    if (steamPath.isEmpty()) {
-        qDebug() << "Steam path not found!";
-        return;
-    }
+public:
+    // تابع استاتیک برای اسکن بازی‌ها
+    static void scanSteamGames();
 
-    QString libraryPath = steamPath + "/steamapps";
-    QDir dir(libraryPath);
-    if (!dir.exists()) return;
+private:
+    static QString getSteamPath();
+    static QVector<GameInfo> parseManifestFile(const QString& manifestPath);
+};
 
-    QStringList filters;
-    filters << "appmanifest_*.acf";
-    QFileInfoList list = dir.entryInfoList(filters, QDir::Files);
-
-    for (const QFileInfo &fileInfo : list) {
-        QVector<GameInfo> parsedGames = parseManifestFile(fileInfo.absoluteFilePath());
-        for (const auto &game : parsedGames) {
-            qDebug() << "Found Steam Game:" << game.name << "Path:" << game.exePath;
-        }
-    }
-}
-
-QString SteamScanner::getSteamPath()
-{
-#if defined(Q_OS_WIN)
-    QDir steamWin("C:/Program Files (x86)/Steam");
-    if (steamWin.exists()) return steamWin.absolutePath();
+#endif // STEAMSCANNER_H    if (steamWin.exists()) return steamWin.absolutePath();
     
     QDir steamWin2("C:/Program Files/Steam");
     if (steamWin2.exists()) return steamWin2.absolutePath();
