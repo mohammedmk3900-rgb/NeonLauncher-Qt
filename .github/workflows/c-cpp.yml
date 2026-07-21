@@ -9,52 +9,38 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Install Qt6 (6.5.3)
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.5.3'
+      - uses: actions/checkout@v4
+      
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '6.5.3'
 
-    - name: Clean Workspace and Configure CMake
-      run: |
-        rm -rf build
-        cmake -B build -DCMAKE_BUILD_TYPE=Release
-    
-    - name: Build
-      run: cmake --build build --config Release
+      - name: Install Dependencies (Linux)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libgl1-mesa-dev libpulse-dev
 
-    - name: Upload Linux Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: NeonLauncher-Linux
-        path: build/NeonLauncherApp*
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Project
+        run: cmake --build build --config Release
 
   build-windows:
-    runs-on: windows-2019
-
+    runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Install Qt6 (6.5.3 MSVC)
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.5.3'
-        host: 'windows'
-        target: 'desktop'
-        arch: 'win64_msvc2019_64'
-    
-    - name: Configure with CMake
-      run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
-    
-    - name: Build
-      run: cmake --build build --config Release
+      - uses: actions/checkout@v4
+      
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '6.5.3'
+          arch: 'msvc2019_64'
 
-    - name: Upload Windows Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: NeonLauncher-Windows
-        path: build/Release/
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Project
+        run: cmake --build build --config Release
