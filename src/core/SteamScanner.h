@@ -3,7 +3,6 @@
 
 #include <QString>
 #include <QVector>
-#include <QObject>
 
 struct GameInfo {
     QString name;
@@ -11,14 +10,10 @@ struct GameInfo {
     QString iconPath;
 };
 
-class SteamScanner : public QObject
+class SteamScanner
 {
-    Q_OBJECT
-
 public:
-    explicit SteamScanner(QObject *parent = nullptr);
-
-    // تابع استاتیک برای اسکن راحت
+    // تابع استاتیک برای اسکن بازی‌ها
     static void scanSteamGames();
 
 private:
