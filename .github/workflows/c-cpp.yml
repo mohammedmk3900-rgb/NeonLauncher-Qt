@@ -18,8 +18,10 @@ jobs:
       with:
         version: '6.5.3'
 
-    - name: Configure with CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+    - name: Clean and Configure with CMake
+      run: |
+        rm -rf build
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
     
     - name: Build
       run: cmake --build build --config Release
