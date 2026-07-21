@@ -5,9 +5,9 @@ project(NeonLauncher VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# رفع خطای stdext در کامپایلر MSVC ویندوز
+# رفع خطای stdext و ناسازگاری تکرارکننده‌ها در کامپایلر MSVC ویندوز
 if(MSVC)
-    add_compile_definitions(_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH)
+    add_compile_definitions(_SILENCE_STDEXT_ARR_IT_DEPRECATION_WARNINGS _ITERATOR_DEBUG_LEVEL=0)
 endif()
 
 set(CMAKE_AUTOMOC ON)
