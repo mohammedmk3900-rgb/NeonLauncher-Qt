@@ -1,39 +1,26 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-#include <QQmlContext>
+#include "SteamScanner.h"
 #include <QDebug>
-#include "core/Database.h"
-#include "core/SteamScanner.h"
-#include "core/GameModel.h"
+#include <QDir>
+#include <QFile>
 
-int main(int argc, char *argv[])
+void SteamScanner::scanSteamGames()
 {
-    QGuiApplication app(argc, argv);
+    // کدهای پیاده‌سازی اسکنر استیم شما
+    qDebug() << "Scanning Steam games...";
+}
 
-    // Initialize Database
-    if (!Database::initialize()) {
-        qWarning() << "Failed to initialize database!";
-        return -1;
-    } else {
-        qDebug() << "Database initialized successfully";
-    }
+QString SteamScanner::getSteamPath()
+{
+    // پیاده‌سازی مسیر استیم
+    return "";
+}
 
-    // Create game model
-    GameModel gameModel;
-
-    // Scan Steam games on startup
-    SteamScanner::scanSteamGames();
-
-    // Load games from database into model
-    gameModel.loadGamesFromDatabase();
-
-    QQmlApplicationEngine engine;
-
-    // Expose gameModel to QML
-    engine.rootContext()->setContextProperty("gameModel", &gameModel);
-
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,
-                     &app, []() { QCoreApplication::exit(-1); },
+QVector<GameInfo> SteamScanner::parseManifestFile(const QString& manifestPath)
+{
+    QVector<GameInfo> games;
+    // پیاده‌سازی پارس کردن فایل مانیفست
+    return games;
+}
                      Qt::QueuedConnection);
 
     engine.loadFromModule("NeonLauncher", "Main");
