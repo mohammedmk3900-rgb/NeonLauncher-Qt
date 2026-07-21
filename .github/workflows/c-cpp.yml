@@ -14,22 +14,23 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Install Qt6 dependencies
+    - name: Install Qt6 and dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y \
           qt6-base-dev \
-          qt6-qml-dev \
-          qt6-quick-dev \
-          qt6-sql-dev \
+          qt6-declarative-dev \
+          qt6-tools-dev \
+          qml6-module-qtcore \
+          qml6-module-qtquick \
           cmake \
           build-essential
     
     - name: Configure with CMake
-      run: cmake -B build
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
     
     - name: Build
-      run: cmake --build build
+      run: cmake --build build --config Release
     
     - name: Tests
       run: ctest --test-dir build --verbose || true
