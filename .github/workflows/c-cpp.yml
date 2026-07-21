@@ -7,30 +7,27 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
+  build-windows:
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
     
-    - name: Install Qt6 and dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          qt6-base-dev \
-          qt6-declarative-dev \
-          qt6-tools-dev \
-          qml6-module-qtcore \
-          qml6-module-qtquick \
-          cmake \
-          build-essential
+    - name: Install Qt6
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.4.2'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+        modules: 'qtbase qtdeclarative'
     
     - name: Configure with CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
     
     - name: Build
       run: cmake --build build --config Release
     
     - name: Tests
-      run: ctest --test-dir build --verbose || true
+      run: ctest --test-dir build --verbose --config Release || true
